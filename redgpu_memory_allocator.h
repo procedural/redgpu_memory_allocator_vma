@@ -56,25 +56,25 @@ typedef struct VmaRecordSettings {
   const char *   pFilePath;
 } VmaRecordSettings;
 
-typedef struct VmaVkFunctions {
-  void * vkGetPhysicalDeviceProperties;
-  void * vkGetPhysicalDeviceMemoryProperties;
-  void * vkAllocateMemory;
-  void * vkFreeMemory;
-  void * vkMapMemory;
-  void * vkUnmapMemory;
-  void * vkFlushMappedMemoryRanges;
-  void * vkInvalidateMappedMemoryRanges;
-  void * vkBindBufferMemory;
-  void * vkBindImageMemory;
-  void * vkGetBufferMemoryRequirements;
-  void * vkGetImageMemoryRequirements;
-  void * vkCreateBuffer;
-  void * vkDestroyBuffer;
-  void * vkCreateImage;
-  void * vkDestroyImage;
-  void * vkCmdCopyBuffer;
-} VmaVkFunctions;
+typedef struct VmaRedGpuFunctions {
+  void * redgpuVkGetPhysicalDeviceProperties;
+  void * redgpuVkGetPhysicalDeviceMemoryProperties;
+  void * redgpuVkAllocateMemory;
+  void * redgpuVkFreeMemory;
+  void * redgpuVkMapMemory;
+  void * redgpuVkUnmapMemory;
+  void * redgpuVkFlushMappedMemoryRanges;
+  void * redgpuVkInvalidateMappedMemoryRanges;
+  void * redgpuVkBindBufferMemory;
+  void * redgpuVkBindImageMemory;
+  void * redgpuVkGetBufferMemoryRequirements;
+  void * redgpuVkGetImageMemoryRequirements;
+  void * redgpuVkCreateBuffer;
+  void * redgpuVkDestroyBuffer;
+  void * redgpuVkCreateImage;
+  void * redgpuVkDestroyImage;
+  void * redgpuVkCmdCopyBuffer;
+} VmaRedGpuFunctions;
 
 typedef struct VmaAllocatorCreateInfo {
   VmaAllocatorCreateFlags          flags;
@@ -85,16 +85,20 @@ typedef struct VmaAllocatorCreateInfo {
   const VmaDeviceMemoryCallbacks * pDeviceMemoryCallbacks;
   unsigned                         frameInUseCount;
   const uint64_t *                 pHeapSizeLimit;
-  const VmaVkFunctions *           pVulkanFunctions;
+  const VmaRedGpuFunctions *       pRedGpuFunctions;
   const VmaRecordSettings *        pRecordSettings;
   RedHandleContext                 instance;
   unsigned                         vulkanApiVersion;
+  RedContext                       redgpuContext;
+  unsigned                         redgpuContextGpuIndex;
 } VmaAllocatorCreateInfo;
 
 typedef struct VmaAllocatorInfo {
   RedHandleContext   instance;
   RedHandleGpuDevice physicalDevice;
   RedHandleGpu       device;
+  RedContext         redgpuContext;
+  unsigned           redgpuContextGpuIndex;
 } VmaAllocatorInfo;
 
 typedef struct VmaStatInfo {

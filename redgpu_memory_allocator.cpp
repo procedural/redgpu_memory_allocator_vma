@@ -12,13 +12,15 @@
 
 // NOTE(Constantine): portability zone start.
 
-#define VMA_VULKAN_VERSION        1000000
-#define VMA_DEDICATED_ALLOCATION  0
-#define VMA_BIND_MEMORY2          0
-#define VMA_MEMORY_BUDGET         0
-#define VMA_BUFFER_DEVICE_ADDRESS 0
-#define VMA_MEMORY_PRIORITY       0
-#define VMA_EXTERNAL_MEMORY       0
+#define VMA_VULKAN_VERSION           1000000
+#define VMA_DEDICATED_ALLOCATION     0
+#define VMA_BIND_MEMORY2             0
+#define VMA_MEMORY_BUDGET            0
+#define VMA_BUFFER_DEVICE_ADDRESS    0
+#define VMA_MEMORY_PRIORITY          0
+#define VMA_EXTERNAL_MEMORY          0
+#define VMA_STATIC_VULKAN_FUNCTIONS  0
+#define VMA_DYNAMIC_VULKAN_FUNCTIONS 0
 
 #if !defined(NOMINMAX) && defined(VMA_IMPLEMENTATION)
     #define NOMINMAX // For windows.h
@@ -60,34 +62,52 @@
     #endif
 #endif
 
+typedef void (VKAPI_PTR *PFN_redgpuVkGetPhysicalDeviceProperties)(RedContext context, unsigned gpuIndex, VkPhysicalDevice physicalDevice, VkPhysicalDeviceProperties* pProperties);
+typedef void (VKAPI_PTR *PFN_redgpuVkGetPhysicalDeviceMemoryProperties)(RedContext context, unsigned gpuIndex, VkPhysicalDevice physicalDevice, VkPhysicalDeviceMemoryProperties* pMemoryProperties);
+typedef VkResult (VKAPI_PTR *PFN_redgpuVkAllocateMemory)(RedContext context, unsigned gpuIndex, VkDevice device, const VkMemoryAllocateInfo* pAllocateInfo, const VkAllocationCallbacks* pAllocator, VkDeviceMemory* pMemory);
+typedef void (VKAPI_PTR *PFN_redgpuVkFreeMemory)(RedContext context, unsigned gpuIndex, VkDevice device, VkDeviceMemory memory, const VkAllocationCallbacks* pAllocator);
+typedef VkResult (VKAPI_PTR *PFN_redgpuVkMapMemory)(RedContext context, unsigned gpuIndex, VkDevice device, VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void** ppData);
+typedef void (VKAPI_PTR *PFN_redgpuVkUnmapMemory)(RedContext context, unsigned gpuIndex, VkDevice device, VkDeviceMemory memory);
+typedef VkResult (VKAPI_PTR *PFN_redgpuVkFlushMappedMemoryRanges)(RedContext context, unsigned gpuIndex, VkDevice device, uint32_t memoryRangeCount, const VkMappedMemoryRange* pMemoryRanges);
+typedef VkResult (VKAPI_PTR *PFN_redgpuVkInvalidateMappedMemoryRanges)(RedContext context, unsigned gpuIndex, VkDevice device, uint32_t memoryRangeCount, const VkMappedMemoryRange* pMemoryRanges);
+typedef VkResult (VKAPI_PTR *PFN_redgpuVkBindBufferMemory)(RedContext context, unsigned gpuIndex, VkDevice device, VkBuffer buffer, VkDeviceMemory memory, VkDeviceSize memoryOffset);
+typedef VkResult (VKAPI_PTR *PFN_redgpuVkBindImageMemory)(RedContext context, unsigned gpuIndex, VkDevice device, VkImage image, VkDeviceMemory memory, VkDeviceSize memoryOffset);
+typedef void (VKAPI_PTR *PFN_redgpuVkGetBufferMemoryRequirements)(RedContext context, unsigned gpuIndex, VkDevice device, VkBuffer buffer, VkMemoryRequirements* pMemoryRequirements);
+typedef void (VKAPI_PTR *PFN_redgpuVkGetImageMemoryRequirements)(RedContext context, unsigned gpuIndex, VkDevice device, VkImage image, VkMemoryRequirements* pMemoryRequirements);
+typedef VkResult (VKAPI_PTR *PFN_redgpuVkCreateBuffer)(RedContext context, unsigned gpuIndex, VkDevice device, const VkBufferCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkBuffer* pBuffer);
+typedef void (VKAPI_PTR *PFN_redgpuVkDestroyBuffer)(RedContext context, unsigned gpuIndex, VkDevice device, VkBuffer buffer, const VkAllocationCallbacks* pAllocator);
+typedef VkResult (VKAPI_PTR *PFN_redgpuVkCreateImage)(RedContext context, unsigned gpuIndex, VkDevice device, const VkImageCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkImage* pImage);
+typedef void (VKAPI_PTR *PFN_redgpuVkDestroyImage)(RedContext context, unsigned gpuIndex, VkDevice device, VkImage image, const VkAllocationCallbacks* pAllocator);
+typedef void (VKAPI_PTR *PFN_redgpuVkCmdCopyBuffer)(RedContext context, unsigned gpuIndex, VkCommandBuffer commandBuffer, VkBuffer srcBuffer, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferCopy* pRegions);
+
 typedef struct VmaVulkanFunctions {
-  PFN_vkGetPhysicalDeviceProperties           vkGetPhysicalDeviceProperties;
-  PFN_vkGetPhysicalDeviceMemoryProperties     vkGetPhysicalDeviceMemoryProperties;
-  PFN_vkAllocateMemory                        vkAllocateMemory;
-  PFN_vkFreeMemory                            vkFreeMemory;
-  PFN_vkMapMemory                             vkMapMemory;
-  PFN_vkUnmapMemory                           vkUnmapMemory;
-  PFN_vkFlushMappedMemoryRanges               vkFlushMappedMemoryRanges;
-  PFN_vkInvalidateMappedMemoryRanges          vkInvalidateMappedMemoryRanges;
-  PFN_vkBindBufferMemory                      vkBindBufferMemory;
-  PFN_vkBindImageMemory                       vkBindImageMemory;
-  PFN_vkGetBufferMemoryRequirements           vkGetBufferMemoryRequirements;
-  PFN_vkGetImageMemoryRequirements            vkGetImageMemoryRequirements;
-  PFN_vkCreateBuffer                          vkCreateBuffer;
-  PFN_vkDestroyBuffer                         vkDestroyBuffer;
-  PFN_vkCreateImage                           vkCreateImage;
-  PFN_vkDestroyImage                          vkDestroyImage;
-  PFN_vkCmdCopyBuffer                         vkCmdCopyBuffer;
+  PFN_redgpuVkGetPhysicalDeviceProperties       vkGetPhysicalDeviceProperties;
+  PFN_redgpuVkGetPhysicalDeviceMemoryProperties vkGetPhysicalDeviceMemoryProperties;
+  PFN_redgpuVkAllocateMemory                    vkAllocateMemory;
+  PFN_redgpuVkFreeMemory                        vkFreeMemory;
+  PFN_redgpuVkMapMemory                         vkMapMemory;
+  PFN_redgpuVkUnmapMemory                       vkUnmapMemory;
+  PFN_redgpuVkFlushMappedMemoryRanges           vkFlushMappedMemoryRanges;
+  PFN_redgpuVkInvalidateMappedMemoryRanges      vkInvalidateMappedMemoryRanges;
+  PFN_redgpuVkBindBufferMemory                  vkBindBufferMemory;
+  PFN_redgpuVkBindImageMemory                   vkBindImageMemory;
+  PFN_redgpuVkGetBufferMemoryRequirements       vkGetBufferMemoryRequirements;
+  PFN_redgpuVkGetImageMemoryRequirements        vkGetImageMemoryRequirements;
+  PFN_redgpuVkCreateBuffer                      vkCreateBuffer;
+  PFN_redgpuVkDestroyBuffer                     vkDestroyBuffer;
+  PFN_redgpuVkCreateImage                       vkCreateImage;
+  PFN_redgpuVkDestroyImage                      vkDestroyImage;
+  PFN_redgpuVkCmdCopyBuffer                     vkCmdCopyBuffer;
 #if VMA_DEDICATED_ALLOCATION
-  PFN_vkGetBufferMemoryRequirements2KHR       vkGetBufferMemoryRequirements2KHR;
-  PFN_vkGetImageMemoryRequirements2KHR        vkGetImageMemoryRequirements2KHR;
+  PFN_vkGetBufferMemoryRequirements2KHR         vkGetBufferMemoryRequirements2KHR;
+  PFN_vkGetImageMemoryRequirements2KHR          vkGetImageMemoryRequirements2KHR;
 #endif
 #if VMA_BIND_MEMORY2
-  PFN_vkBindBufferMemory2KHR                  vkBindBufferMemory2KHR;
-  PFN_vkBindImageMemory2KHR                   vkBindImageMemory2KHR;
+  PFN_vkBindBufferMemory2KHR                    vkBindBufferMemory2KHR;
+  PFN_vkBindImageMemory2KHR                     vkBindImageMemory2KHR;
 #endif
 #if VMA_MEMORY_BUDGET
-  PFN_vkGetPhysicalDeviceMemoryProperties2KHR vkGetPhysicalDeviceMemoryProperties2KHR;
+  PFN_vkGetPhysicalDeviceMemoryProperties2KHR   vkGetPhysicalDeviceMemoryProperties2KHR;
 #endif
 } VmaVulkanFunctions;
 
@@ -4339,6 +4359,8 @@ public:
     bool m_UseExtMemoryPriority;
     VkDevice m_hDevice;
     VkInstance m_hInstance;
+    RedContext m_redgpuContext;
+    unsigned m_redgpuContextGpuIndex;
     bool m_AllocationCallbacksSpecified;
     VkAllocationCallbacks m_AllocationCallbacks;
     VmaDeviceMemoryCallbacks m_DeviceMemoryCallbacks;
@@ -5301,6 +5323,8 @@ VkResult VmaAllocation_T::DedicatedAllocMap(VmaAllocator hAllocator, void** ppDa
     else
     {
         VkResult result = (*hAllocator->GetVulkanFunctions().vkMapMemory)(
+            hAllocator->m_redgpuContext,
+            hAllocator->m_redgpuContextGpuIndex,
             hAllocator->m_hDevice,
             m_DedicatedAllocation.m_hMemory,
             0, // offset
@@ -5327,6 +5351,8 @@ void VmaAllocation_T::DedicatedAllocUnmap(VmaAllocator hAllocator)
         {
             m_DedicatedAllocation.m_pMappedData = VMA_NULL;
             (*hAllocator->GetVulkanFunctions().vkUnmapMemory)(
+                hAllocator->m_redgpuContext,
+                hAllocator->m_redgpuContextGpuIndex,
                 hAllocator->m_hDevice,
                 m_DedicatedAllocation.m_hMemory);
         }
@@ -8874,6 +8900,8 @@ VkResult VmaDeviceMemoryBlock::Map(VmaAllocator hAllocator, uint32_t count, void
     else
     {
         VkResult result = (*hAllocator->GetVulkanFunctions().vkMapMemory)(
+            hAllocator->m_redgpuContext,
+            hAllocator->m_redgpuContextGpuIndex,
             hAllocator->m_hDevice,
             m_hMemory,
             0, // offset
@@ -8906,7 +8934,7 @@ void VmaDeviceMemoryBlock::Unmap(VmaAllocator hAllocator, uint32_t count)
         if(m_MapCount == 0)
         {
             m_pMappedData = VMA_NULL;
-            (*hAllocator->GetVulkanFunctions().vkUnmapMemory)(hAllocator->m_hDevice, m_hMemory);
+            (*hAllocator->GetVulkanFunctions().vkUnmapMemory)(hAllocator->m_redgpuContext, hAllocator->m_redgpuContextGpuIndex, hAllocator->m_hDevice, m_hMemory);
         }
     }
     else
@@ -9926,7 +9954,7 @@ void VmaBlockVector::ApplyDefragmentationMovesCpu(
                 memRange.size = VMA_MIN(
                     VmaAlignUp(move.size + (move.srcOffset - memRange.offset), nonCoherentAtomSize),
                     pSrcBlock->m_pMetadata->GetSize() - memRange.offset);
-                (*m_hAllocator->GetVulkanFunctions().vkInvalidateMappedMemoryRanges)(m_hAllocator->m_hDevice, 1, &memRange);
+                (*m_hAllocator->GetVulkanFunctions().vkInvalidateMappedMemoryRanges)(m_hAllocator->m_redgpuContext, m_hAllocator->m_redgpuContextGpuIndex, m_hAllocator->m_hDevice, 1, &memRange);
             }
 
             // THE PLACE WHERE ACTUAL DATA COPY HAPPENS.
@@ -9950,7 +9978,7 @@ void VmaBlockVector::ApplyDefragmentationMovesCpu(
                 memRange.size = VMA_MIN(
                     VmaAlignUp(move.size + (move.dstOffset - memRange.offset), nonCoherentAtomSize),
                     pDstBlock->m_pMetadata->GetSize() - memRange.offset);
-                (*m_hAllocator->GetVulkanFunctions().vkFlushMappedMemoryRanges)(m_hAllocator->m_hDevice, 1, &memRange);
+                (*m_hAllocator->GetVulkanFunctions().vkFlushMappedMemoryRanges)(m_hAllocator->m_redgpuContext, m_hAllocator->m_redgpuContextGpuIndex, m_hAllocator->m_hDevice, 1, &memRange);
             }
         }
     }
@@ -10007,11 +10035,11 @@ void VmaBlockVector::ApplyDefragmentationMovesGpu(
             {
                 bufCreateInfo.size = pBlock->m_pMetadata->GetSize();
                 pDefragCtx->res = (*m_hAllocator->GetVulkanFunctions().vkCreateBuffer)(
-                    m_hAllocator->m_hDevice, &bufCreateInfo, m_hAllocator->GetAllocationCallbacks(), &currBlockCtx.hBuffer);
+                    m_hAllocator->m_redgpuContext, m_hAllocator->m_redgpuContextGpuIndex, m_hAllocator->m_hDevice, &bufCreateInfo, m_hAllocator->GetAllocationCallbacks(), &currBlockCtx.hBuffer);
                 if(pDefragCtx->res == VK_SUCCESS)
                 {
                     pDefragCtx->res = (*m_hAllocator->GetVulkanFunctions().vkBindBufferMemory)(
-                        m_hAllocator->m_hDevice, currBlockCtx.hBuffer, pBlock->GetDeviceMemory(), 0);
+                        m_hAllocator->m_redgpuContext, m_hAllocator->m_redgpuContextGpuIndex, m_hAllocator->m_hDevice, currBlockCtx.hBuffer, pBlock->GetDeviceMemory(), 0);
                 }
             }
         }
@@ -10034,7 +10062,7 @@ void VmaBlockVector::ApplyDefragmentationMovesGpu(
                 move.dstOffset,
                 move.size };
             (*m_hAllocator->GetVulkanFunctions().vkCmdCopyBuffer)(
-                commandBuffer, srcBlockCtx.hBuffer, dstBlockCtx.hBuffer, 1, &region);
+                m_hAllocator->m_redgpuContext, m_hAllocator->m_redgpuContextGpuIndex, commandBuffer, srcBlockCtx.hBuffer, dstBlockCtx.hBuffer, 1, &region);
         }
     }
 
@@ -10293,7 +10321,7 @@ void VmaBlockVector::DefragmentationEnd(
             VmaBlockDefragmentationContext &blockCtx = pCtx->blockContexts[blockIndex];
             if(blockCtx.hBuffer)
             {
-                (*m_hAllocator->GetVulkanFunctions().vkDestroyBuffer)(m_hAllocator->m_hDevice, blockCtx.hBuffer, m_hAllocator->GetAllocationCallbacks());
+                (*m_hAllocator->GetVulkanFunctions().vkDestroyBuffer)(m_hAllocator->m_redgpuContext, m_hAllocator->m_redgpuContextGpuIndex, m_hAllocator->m_hDevice, blockCtx.hBuffer, m_hAllocator->GetAllocationCallbacks());
             }
         }
 
@@ -12181,6 +12209,8 @@ VmaAllocator_T::VmaAllocator_T(const VmaAllocatorCreateInfo* pCreateInfo) :
     m_UseExtMemoryPriority((pCreateInfo->flags & VMA_ALLOCATOR_CREATE_EXT_MEMORY_PRIORITY_BIT) != 0),
     m_hDevice((VkDevice)pCreateInfo->device),
     m_hInstance((VkInstance)pCreateInfo->instance),
+    m_redgpuContext(pCreateInfo->redgpuContext),
+    m_redgpuContextGpuIndex(pCreateInfo->redgpuContextGpuIndex),
     m_AllocationCallbacksSpecified(pCreateInfo->pAllocationCallbacks != VMA_NULL),
     m_AllocationCallbacks(pCreateInfo->pAllocationCallbacks ?
         *(const VkAllocationCallbacks *)pCreateInfo->pAllocationCallbacks : VmaEmptyAllocationCallbacks),
@@ -12275,10 +12305,10 @@ VmaAllocator_T::VmaAllocator_T(const VmaAllocatorCreateInfo* pCreateInfo) :
         m_DeviceMemoryCallbacks.pfnFree = pCreateInfo->pDeviceMemoryCallbacks->pfnFree;
     }
 
-    ImportVulkanFunctions((const VmaVulkanFunctions *)pCreateInfo->pVulkanFunctions);
+    ImportVulkanFunctions((const VmaVulkanFunctions *)pCreateInfo->pRedGpuFunctions);
 
-    (*m_VulkanFunctions.vkGetPhysicalDeviceProperties)(m_PhysicalDevice, &m_PhysicalDeviceProperties);
-    (*m_VulkanFunctions.vkGetPhysicalDeviceMemoryProperties)(m_PhysicalDevice, &m_MemProps);
+    (*m_VulkanFunctions.vkGetPhysicalDeviceProperties)(m_redgpuContext, m_redgpuContextGpuIndex, m_PhysicalDevice, &m_PhysicalDeviceProperties);
+    (*m_VulkanFunctions.vkGetPhysicalDeviceMemoryProperties)(m_redgpuContext, m_redgpuContextGpuIndex, m_PhysicalDevice, &m_MemProps);
 
     VMA_ASSERT(VmaIsPow2(VMA_MIN_ALIGNMENT));
     VMA_ASSERT(VmaIsPow2(VMA_DEBUG_MIN_BUFFER_IMAGE_GRANULARITY));
@@ -12925,6 +12955,8 @@ VkResult VmaAllocator_T::AllocateDedicatedMemoryPage(
     if(map)
     {
         res = (*m_VulkanFunctions.vkMapMemory)(
+            m_redgpuContext,
+            m_redgpuContextGpuIndex,
             m_hDevice,
             hMemory,
             0,
@@ -12977,7 +13009,7 @@ void VmaAllocator_T::GetBufferMemoryRequirements(
     else
 #endif // #if VMA_DEDICATED_ALLOCATION || VMA_VULKAN_VERSION >= 1001000
     {
-        (*m_VulkanFunctions.vkGetBufferMemoryRequirements)(m_hDevice, hBuffer, &memReq);
+        (*m_VulkanFunctions.vkGetBufferMemoryRequirements)(m_redgpuContext, m_redgpuContextGpuIndex, m_hDevice, hBuffer, &memReq);
         requiresDedicatedAllocation = false;
         prefersDedicatedAllocation  = false;
     }
@@ -13009,7 +13041,7 @@ void VmaAllocator_T::GetImageMemoryRequirements(
     else
 #endif // #if VMA_DEDICATED_ALLOCATION || VMA_VULKAN_VERSION >= 1001000
     {
-        (*m_VulkanFunctions.vkGetImageMemoryRequirements)(m_hDevice, hImage, &memReq);
+        (*m_VulkanFunctions.vkGetImageMemoryRequirements)(m_redgpuContext, m_redgpuContextGpuIndex, m_hDevice, hImage, &memReq);
         requiresDedicatedAllocation = false;
         prefersDedicatedAllocation  = false;
     }
@@ -13702,7 +13734,7 @@ VkResult VmaAllocator_T::AllocateVulkanMemory(const VkMemoryAllocateInfo* pAlloc
     }
 
     // VULKAN CALL vkAllocateMemory.
-    VkResult res = (*m_VulkanFunctions.vkAllocateMemory)(m_hDevice, pAllocateInfo, GetAllocationCallbacks(), pMemory);
+    VkResult res = (*m_VulkanFunctions.vkAllocateMemory)(m_redgpuContext, m_redgpuContextGpuIndex, m_hDevice, pAllocateInfo, GetAllocationCallbacks(), pMemory);
 
     if(res == VK_SUCCESS)
     {
@@ -13735,7 +13767,7 @@ void VmaAllocator_T::FreeVulkanMemory(uint32_t memoryType, VkDeviceSize size, Vk
     }
 
     // VULKAN CALL vkFreeMemory.
-    (*m_VulkanFunctions.vkFreeMemory)(m_hDevice, hMemory, GetAllocationCallbacks());
+    (*m_VulkanFunctions.vkFreeMemory)(m_redgpuContext, m_redgpuContextGpuIndex, m_hDevice, hMemory, GetAllocationCallbacks());
 
     m_Budget.m_BlockBytes[MemoryTypeIndexToHeapIndex(memoryType)] -= size;
 
@@ -13769,7 +13801,7 @@ VkResult VmaAllocator_T::BindVulkanBuffer(
     }
     else
     {
-        return (*m_VulkanFunctions.vkBindBufferMemory)(m_hDevice, buffer, memory, memoryOffset);
+        return (*m_VulkanFunctions.vkBindBufferMemory)(m_redgpuContext, m_redgpuContextGpuIndex, m_hDevice, buffer, memory, memoryOffset);
     }
 }
 
@@ -13800,7 +13832,7 @@ VkResult VmaAllocator_T::BindVulkanImage(
     }
     else
     {
-        return (*m_VulkanFunctions.vkBindImageMemory)(m_hDevice, image, memory, memoryOffset);
+        return (*m_VulkanFunctions.vkBindImageMemory)(m_redgpuContext, m_redgpuContextGpuIndex, m_hDevice, image, memory, memoryOffset);
     }
 }
 
@@ -13915,10 +13947,10 @@ VkResult VmaAllocator_T::FlushOrInvalidateAllocation(
         switch(op)
         {
         case VMA_CACHE_FLUSH:
-            res = (*GetVulkanFunctions().vkFlushMappedMemoryRanges)(m_hDevice, 1, &memRange);
+            res = (*GetVulkanFunctions().vkFlushMappedMemoryRanges)(m_redgpuContext, m_redgpuContextGpuIndex, m_hDevice, 1, &memRange);
             break;
         case VMA_CACHE_INVALIDATE:
-            res = (*GetVulkanFunctions().vkInvalidateMappedMemoryRanges)(m_hDevice, 1, &memRange);
+            res = (*GetVulkanFunctions().vkInvalidateMappedMemoryRanges)(m_redgpuContext, m_redgpuContextGpuIndex, m_hDevice, 1, &memRange);
             break;
         default:
             VMA_ASSERT(0);
@@ -13956,10 +13988,10 @@ VkResult VmaAllocator_T::FlushOrInvalidateAllocations(
         switch(op)
         {
         case VMA_CACHE_FLUSH:
-            res = (*GetVulkanFunctions().vkFlushMappedMemoryRanges)(m_hDevice, (uint32_t)ranges.size(), ranges.data());
+            res = (*GetVulkanFunctions().vkFlushMappedMemoryRanges)(m_redgpuContext, m_redgpuContextGpuIndex, m_hDevice, (uint32_t)ranges.size(), ranges.data());
             break;
         case VMA_CACHE_INVALIDATE:
-            res = (*GetVulkanFunctions().vkInvalidateMappedMemoryRanges)(m_hDevice, (uint32_t)ranges.size(), ranges.data());
+            res = (*GetVulkanFunctions().vkInvalidateMappedMemoryRanges)(m_redgpuContext, m_redgpuContextGpuIndex, m_hDevice, (uint32_t)ranges.size(), ranges.data());
             break;
         default:
             VMA_ASSERT(0);
@@ -14007,16 +14039,16 @@ uint32_t VmaAllocator_T::CalculateGpuDefragmentationMemoryTypeBits() const
     // Create buffer.
     VkBuffer buf = VK_NULL_HANDLE;
     VkResult res = (*GetVulkanFunctions().vkCreateBuffer)(
-        m_hDevice, &dummyBufCreateInfo, GetAllocationCallbacks(), &buf);
+        m_redgpuContext, m_redgpuContextGpuIndex, m_hDevice, &dummyBufCreateInfo, GetAllocationCallbacks(), &buf);
     if(res == VK_SUCCESS)
     {
         // Query for supported memory types.
         VkMemoryRequirements memReq;
-        (*GetVulkanFunctions().vkGetBufferMemoryRequirements)(m_hDevice, buf, &memReq);
+        (*GetVulkanFunctions().vkGetBufferMemoryRequirements)(m_redgpuContext, m_redgpuContextGpuIndex, m_hDevice, buf, &memReq);
         memoryTypeBits = memReq.memoryTypeBits;
 
         // Destroy buffer.
-        (*GetVulkanFunctions().vkDestroyBuffer)(m_hDevice, buf, GetAllocationCallbacks());
+        (*GetVulkanFunctions().vkDestroyBuffer)(m_redgpuContext, m_redgpuContextGpuIndex, m_hDevice, buf, GetAllocationCallbacks());
     }
 
     return memoryTypeBits;
@@ -14301,6 +14333,8 @@ VMA_CALL_PRE void VMA_CALL_POST vmaGetAllocatorInfo(VmaAllocator allocator, VmaA
     pAllocatorInfo->instance = (RedHandleContext)allocator->m_hInstance;
     pAllocatorInfo->physicalDevice = (RedHandleGpuDevice)allocator->GetPhysicalDevice();
     pAllocatorInfo->device = (RedHandleGpu)allocator->m_hDevice;
+    pAllocatorInfo->redgpuContext = allocator->m_redgpuContext;
+    pAllocatorInfo->redgpuContextGpuIndex = allocator->m_redgpuContextGpuIndex;
 }
 
 VMA_CALL_PRE void VMA_CALL_POST vmaGetPhysicalDeviceProperties(
@@ -14630,12 +14664,12 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaFindMemoryTypeIndexForBufferInfo(
     const VkDevice hDev = allocator->m_hDevice;
     VkBuffer hBuffer = VK_NULL_HANDLE;
     VkResult res = allocator->GetVulkanFunctions().vkCreateBuffer(
-        hDev, pBufferCreateInfo, allocator->GetAllocationCallbacks(), &hBuffer);
+        allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, hDev, pBufferCreateInfo, allocator->GetAllocationCallbacks(), &hBuffer);
     if(res == VK_SUCCESS)
     {
         VkMemoryRequirements memReq = {};
         allocator->GetVulkanFunctions().vkGetBufferMemoryRequirements(
-            hDev, hBuffer, &memReq);
+            allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, hDev, hBuffer, &memReq);
 
         res = vmaFindMemoryTypeIndex(
             allocator,
@@ -14644,7 +14678,7 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaFindMemoryTypeIndexForBufferInfo(
             pMemoryTypeIndex);
 
         allocator->GetVulkanFunctions().vkDestroyBuffer(
-            hDev, hBuffer, allocator->GetAllocationCallbacks());
+            allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, hDev, hBuffer, allocator->GetAllocationCallbacks());
     }
     return res;
 }
@@ -14663,12 +14697,12 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaFindMemoryTypeIndexForImageInfo(
     const VkDevice hDev = allocator->m_hDevice;
     VkImage hImage = VK_NULL_HANDLE;
     VkResult res = allocator->GetVulkanFunctions().vkCreateImage(
-        hDev, pImageCreateInfo, allocator->GetAllocationCallbacks(), &hImage);
+        allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, hDev, pImageCreateInfo, allocator->GetAllocationCallbacks(), &hImage);
     if(res == VK_SUCCESS)
     {
         VkMemoryRequirements memReq = {};
         allocator->GetVulkanFunctions().vkGetImageMemoryRequirements(
-            hDev, hImage, &memReq);
+            allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, hDev, hImage, &memReq);
 
         res = vmaFindMemoryTypeIndex(
             allocator,
@@ -14677,7 +14711,7 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaFindMemoryTypeIndexForImageInfo(
             pMemoryTypeIndex);
 
         allocator->GetVulkanFunctions().vkDestroyImage(
-            hDev, hImage, allocator->GetAllocationCallbacks());
+            allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, hDev, hImage, allocator->GetAllocationCallbacks());
     }
     return res;
 }
@@ -15538,6 +15572,8 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaCreateBuffer(
 
     // 1. Create VkBuffer.
     VkResult res = (*allocator->GetVulkanFunctions().vkCreateBuffer)(
+        allocator->m_redgpuContext,
+        allocator->m_redgpuContextGpuIndex,
         allocator->m_hDevice,
         pBufferCreateInfo,
         allocator->GetAllocationCallbacks(),
@@ -15599,11 +15635,11 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaCreateBuffer(
                 1, // allocationCount
                 pAllocation);
             *pAllocation = VK_NULL_HANDLE;
-            (*allocator->GetVulkanFunctions().vkDestroyBuffer)(allocator->m_hDevice, *pBuffer, allocator->GetAllocationCallbacks());
+            (*allocator->GetVulkanFunctions().vkDestroyBuffer)(allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, allocator->m_hDevice, *pBuffer, allocator->GetAllocationCallbacks());
             *pBuffer = VK_NULL_HANDLE;
             return res;
         }
-        (*allocator->GetVulkanFunctions().vkDestroyBuffer)(allocator->m_hDevice, *pBuffer, allocator->GetAllocationCallbacks());
+        (*allocator->GetVulkanFunctions().vkDestroyBuffer)(allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, allocator->m_hDevice, *pBuffer, allocator->GetAllocationCallbacks());
         *pBuffer = VK_NULL_HANDLE;
         return res;
     }
@@ -15641,6 +15677,8 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaCreateBufferWithAlignment(
 
     // 1. Create VkBuffer.
     VkResult res = (*allocator->GetVulkanFunctions().vkCreateBuffer)(
+        allocator->m_redgpuContext,
+        allocator->m_redgpuContextGpuIndex,
         allocator->m_hDevice,
         pBufferCreateInfo,
         allocator->GetAllocationCallbacks(),
@@ -15701,11 +15739,11 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaCreateBufferWithAlignment(
                 1, // allocationCount
                 pAllocation);
             *pAllocation = VK_NULL_HANDLE;
-            (*allocator->GetVulkanFunctions().vkDestroyBuffer)(allocator->m_hDevice, *pBuffer, allocator->GetAllocationCallbacks());
+            (*allocator->GetVulkanFunctions().vkDestroyBuffer)(allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, allocator->m_hDevice, *pBuffer, allocator->GetAllocationCallbacks());
             *pBuffer = VK_NULL_HANDLE;
             return res;
         }
-        (*allocator->GetVulkanFunctions().vkDestroyBuffer)(allocator->m_hDevice, *pBuffer, allocator->GetAllocationCallbacks());
+        (*allocator->GetVulkanFunctions().vkDestroyBuffer)(allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, allocator->m_hDevice, *pBuffer, allocator->GetAllocationCallbacks());
         *pBuffer = VK_NULL_HANDLE;
         return res;
     }
@@ -15739,7 +15777,7 @@ VMA_CALL_PRE void VMA_CALL_POST vmaDestroyBuffer(
 
     if(buffer != VK_NULL_HANDLE)
     {
-        (*allocator->GetVulkanFunctions().vkDestroyBuffer)(allocator->m_hDevice, buffer, allocator->GetAllocationCallbacks());
+        (*allocator->GetVulkanFunctions().vkDestroyBuffer)(allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, allocator->m_hDevice, buffer, allocator->GetAllocationCallbacks());
     }
 
     if(allocation != VK_NULL_HANDLE)
@@ -15778,6 +15816,8 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaCreateImage(
 
     // 1. Create VkImage.
     VkResult res = (*allocator->GetVulkanFunctions().vkCreateImage)(
+        allocator->m_redgpuContext,
+        allocator->m_redgpuContextGpuIndex,
         allocator->m_hDevice,
         pImageCreateInfo,
         allocator->GetAllocationCallbacks(),
@@ -15842,11 +15882,11 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaCreateImage(
                 1, // allocationCount
                 pAllocation);
             *pAllocation = VK_NULL_HANDLE;
-            (*allocator->GetVulkanFunctions().vkDestroyImage)(allocator->m_hDevice, *pImage, allocator->GetAllocationCallbacks());
+            (*allocator->GetVulkanFunctions().vkDestroyImage)(allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, allocator->m_hDevice, *pImage, allocator->GetAllocationCallbacks());
             *pImage = VK_NULL_HANDLE;
             return res;
         }
-        (*allocator->GetVulkanFunctions().vkDestroyImage)(allocator->m_hDevice, *pImage, allocator->GetAllocationCallbacks());
+        (*allocator->GetVulkanFunctions().vkDestroyImage)(allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, allocator->m_hDevice, *pImage, allocator->GetAllocationCallbacks());
         *pImage = VK_NULL_HANDLE;
         return res;
     }
@@ -15880,7 +15920,7 @@ VMA_CALL_PRE void VMA_CALL_POST vmaDestroyImage(
 
     if(image != VK_NULL_HANDLE)
     {
-        (*allocator->GetVulkanFunctions().vkDestroyImage)(allocator->m_hDevice, image, allocator->GetAllocationCallbacks());
+        (*allocator->GetVulkanFunctions().vkDestroyImage)(allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, allocator->m_hDevice, image, allocator->GetAllocationCallbacks());
     }
     if(allocation != VK_NULL_HANDLE)
     {
