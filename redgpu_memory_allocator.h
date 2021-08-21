@@ -78,8 +78,8 @@ void      (*redgpuVkCmdCopyBuffer)                     (RedContext context, unsi
 
 typedef struct VmaAllocatorCreateInfo {
   VmaAllocatorCreateFlags          flags;
-  RedHandleGpuDevice               physicalDevice;
-  RedHandleGpu                     device;
+  RedHandleGpuDevice               physicalDevice;              // Required
+  RedHandleGpu                     device;                      // Required
   uint64_t                         preferredLargeHeapBlockSize;
   const void *                     pAllocationCallbacks;
   const VmaDeviceMemoryCallbacks * pDeviceMemoryCallbacks;
@@ -87,10 +87,10 @@ typedef struct VmaAllocatorCreateInfo {
   const uint64_t *                 pHeapSizeLimit;
   const VmaRedGpuFunctions *       pRedGpuFunctions;
   const VmaRecordSettings *        pRecordSettings;
-  RedHandleContext                 instance;
+  RedHandleContext                 instance;                    // Required
   unsigned                         vulkanApiVersion;
-  RedContext                       redgpuContext;
-  unsigned                         redgpuContextGpuIndex;
+  RedContext                       redgpuContext;               // Required
+  unsigned                         redgpuContextGpuIndex;       // Required
 } VmaAllocatorCreateInfo;
 
 typedef struct VmaAllocatorInfo {
