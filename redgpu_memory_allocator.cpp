@@ -64,7 +64,7 @@
 
 typedef void     (VKAPI_PTR *PFN_redgpuVkGetPhysicalDeviceProperties)       (RedContext context, unsigned gpuIndex, VkPhysicalDevice physicalDevice, VkPhysicalDeviceProperties * pProperties);
 typedef void     (VKAPI_PTR *PFN_redgpuVkGetPhysicalDeviceMemoryProperties) (RedContext context, unsigned gpuIndex, VkPhysicalDevice physicalDevice, VkPhysicalDeviceMemoryProperties * pMemoryProperties);
-typedef VkResult (VKAPI_PTR *PFN_redgpuVkAllocateMemory)                    (RedContext context, unsigned gpuIndex, const char * handleName, VkDevice device, const VkMemoryAllocateInfo * pAllocateInfo, const VkAllocationCallbacks * pAllocator, VkDeviceMemory * pMemory);
+typedef VkResult (VKAPI_PTR *PFN_redgpuVkAllocateMemory)                    (RedContext context, unsigned gpuIndex, VkDevice device, const VkMemoryAllocateInfo * pAllocateInfo, const VkAllocationCallbacks * pAllocator, VkDeviceMemory * pMemory);
 typedef void     (VKAPI_PTR *PFN_redgpuVkFreeMemory)                        (RedContext context, unsigned gpuIndex, VkDevice device, VkDeviceMemory memory, const VkAllocationCallbacks * pAllocator);
 typedef VkResult (VKAPI_PTR *PFN_redgpuVkMapMemory)                         (RedContext context, unsigned gpuIndex, VkDevice device, VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void* * ppData);
 typedef void     (VKAPI_PTR *PFN_redgpuVkUnmapMemory)                       (RedContext context, unsigned gpuIndex, VkDevice device, VkDeviceMemory memory);
@@ -74,9 +74,9 @@ typedef VkResult (VKAPI_PTR *PFN_redgpuVkBindBufferMemory)                  (Red
 typedef VkResult (VKAPI_PTR *PFN_redgpuVkBindImageMemory)                   (RedContext context, unsigned gpuIndex, VkDevice device, VkImage image, VkDeviceMemory memory, VkDeviceSize memoryOffset);
 typedef void     (VKAPI_PTR *PFN_redgpuVkGetBufferMemoryRequirements)       (RedContext context, unsigned gpuIndex, VkDevice device, VkBuffer buffer, VkMemoryRequirements * pMemoryRequirements);
 typedef void     (VKAPI_PTR *PFN_redgpuVkGetImageMemoryRequirements)        (RedContext context, unsigned gpuIndex, VkDevice device, VkImage image, VkMemoryRequirements * pMemoryRequirements);
-typedef VkResult (VKAPI_PTR *PFN_redgpuVkCreateBuffer)                      (RedContext context, unsigned gpuIndex, const char * handleName, VkDevice device, const VkBufferCreateInfo * pCreateInfo, const VkAllocationCallbacks * pAllocator, VkBuffer * pBuffer);
+typedef VkResult (VKAPI_PTR *PFN_redgpuVkCreateBuffer)                      (RedContext context, unsigned gpuIndex, VkDevice device, const VkBufferCreateInfo * pCreateInfo, const VkAllocationCallbacks * pAllocator, VkBuffer * pBuffer);
 typedef void     (VKAPI_PTR *PFN_redgpuVkDestroyBuffer)                     (RedContext context, unsigned gpuIndex, VkDevice device, VkBuffer buffer, const VkAllocationCallbacks * pAllocator);
-typedef VkResult (VKAPI_PTR *PFN_redgpuVkCreateImage)                       (RedContext context, unsigned gpuIndex, const char * handleName, VkDevice device, const VkImageCreateInfo * pCreateInfo, const VkAllocationCallbacks * pAllocator, VkImage * pImage);
+typedef VkResult (VKAPI_PTR *PFN_redgpuVkCreateImage)                       (RedContext context, unsigned gpuIndex, VkDevice device, const VkImageCreateInfo * pCreateInfo, const VkAllocationCallbacks * pAllocator, VkImage * pImage);
 typedef void     (VKAPI_PTR *PFN_redgpuVkDestroyImage)                      (RedContext context, unsigned gpuIndex, VkDevice device, VkImage image, const VkAllocationCallbacks * pAllocator);
 typedef void     (VKAPI_PTR *PFN_redgpuVkCmdCopyBuffer)                     (RedContext context, unsigned gpuIndex, VkCommandBuffer commandBuffer, VkBuffer srcBuffer, VkBuffer dstBuffer, uint32_t regionCount, const VkBufferCopy * pRegions);
 
