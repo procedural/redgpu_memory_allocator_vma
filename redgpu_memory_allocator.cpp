@@ -20,60 +20,9 @@
 #define VMA_MEMORY_PRIORITY       0
 #define VMA_EXTERNAL_MEMORY       0
 
-#if VMA_STATS_STRING_ENABLED
-VMA_CALL_PRE void      VMA_CALL_POST vmaBuildStatsString                 (VmaAllocator allocator, char ** ppStatsString, VkBool32 detailedMap);
-VMA_CALL_PRE void      VMA_CALL_POST vmaFreeStatsString                  (VmaAllocator allocator, char * pStatsString);
+#if !defined(NOMINMAX) && defined(VMA_IMPLEMENTATION)
+    #define NOMINMAX // For windows.h
 #endif
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaCreateAllocator                  (const VmaAllocatorCreateInfo * pCreateInfo, VmaAllocator * pAllocator);
-VMA_CALL_PRE void      VMA_CALL_POST vmaDestroyAllocator                 (VmaAllocator allocator);
-VMA_CALL_PRE void      VMA_CALL_POST vmaGetAllocatorInfo                 (VmaAllocator allocator, VmaAllocatorInfo * pAllocatorInfo);
-VMA_CALL_PRE void      VMA_CALL_POST vmaGetPhysicalDeviceProperties      (VmaAllocator allocator, const VkPhysicalDeviceProperties ** ppPhysicalDeviceProperties);
-VMA_CALL_PRE void      VMA_CALL_POST vmaGetMemoryProperties              (VmaAllocator allocator, const VkPhysicalDeviceMemoryProperties ** ppPhysicalDeviceMemoryProperties);
-VMA_CALL_PRE void      VMA_CALL_POST vmaGetMemoryTypeProperties          (VmaAllocator allocator, unsigned memoryTypeIndex, unsigned * pFlags);
-VMA_CALL_PRE void      VMA_CALL_POST vmaSetCurrentFrameIndex             (VmaAllocator allocator, unsigned frameIndex);
-VMA_CALL_PRE void      VMA_CALL_POST vmaCalculateStats                   (VmaAllocator allocator, VmaStats * pStats);
-VMA_CALL_PRE void      VMA_CALL_POST vmaGetBudget                        (VmaAllocator allocator, VmaBudget * pBudget);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaFindMemoryTypeIndex              (VmaAllocator allocator, unsigned memoryTypeBits, const VmaAllocationCreateInfo * pAllocationCreateInfo, unsigned * pMemoryTypeIndex);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaFindMemoryTypeIndexForBufferInfo (VmaAllocator allocator, const VkBufferCreateInfo * pBufferCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, unsigned * pMemoryTypeIndex);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaFindMemoryTypeIndexForImageInfo  (VmaAllocator allocator, const VkImageCreateInfo * pImageCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, unsigned * pMemoryTypeIndex);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaCreatePool                       (VmaAllocator allocator, const VmaPoolCreateInfo * pCreateInfo, VmaPool * pPool);
-VMA_CALL_PRE void      VMA_CALL_POST vmaDestroyPool                      (VmaAllocator allocator, VmaPool pool);
-VMA_CALL_PRE void      VMA_CALL_POST vmaGetPoolStats                     (VmaAllocator allocator, VmaPool pool, VmaPoolStats * pPoolStats);
-VMA_CALL_PRE void      VMA_CALL_POST vmaMakePoolAllocationsLost          (VmaAllocator allocator, VmaPool pool, size_t * pLostAllocationCount);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaCheckPoolCorruption              (VmaAllocator allocator, VmaPool pool);
-VMA_CALL_PRE void      VMA_CALL_POST vmaGetPoolName                      (VmaAllocator allocator, VmaPool pool, const char ** ppName);
-VMA_CALL_PRE void      VMA_CALL_POST vmaSetPoolName                      (VmaAllocator allocator, VmaPool pool, const char * pName);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaAllocateMemory                   (VmaAllocator allocator, const VkMemoryRequirements * pVkMemoryRequirements, const VmaAllocationCreateInfo * pCreateInfo, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaAllocateMemoryPages              (VmaAllocator allocator, const VkMemoryRequirements * pVkMemoryRequirements, const VmaAllocationCreateInfo * pCreateInfo, size_t allocationCount, VmaAllocation * pAllocations, VmaAllocationInfo * pAllocationInfo);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaAllocateMemoryForBuffer          (VmaAllocator allocator, VkBuffer buffer, const VmaAllocationCreateInfo * pCreateInfo, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaAllocateMemoryForImage           (VmaAllocator allocator, VkImage image, const VmaAllocationCreateInfo * pCreateInfo, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
-VMA_CALL_PRE void      VMA_CALL_POST vmaFreeMemory                       (VmaAllocator allocator, const VmaAllocation allocation);
-VMA_CALL_PRE void      VMA_CALL_POST vmaFreeMemoryPages                  (VmaAllocator allocator, size_t allocationCount, const VmaAllocation * pAllocations);
-VMA_CALL_PRE void      VMA_CALL_POST vmaGetAllocationInfo                (VmaAllocator allocator, VmaAllocation allocation, VmaAllocationInfo * pAllocationInfo);
-VMA_CALL_PRE VkBool32  VMA_CALL_POST vmaTouchAllocation                  (VmaAllocator allocator, VmaAllocation allocation);
-VMA_CALL_PRE void      VMA_CALL_POST vmaSetAllocationUserData            (VmaAllocator allocator, VmaAllocation allocation, void * pUserData);
-VMA_CALL_PRE void      VMA_CALL_POST vmaCreateLostAllocation             (VmaAllocator allocator, VmaAllocation * pAllocation);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaMapMemory                        (VmaAllocator allocator, VmaAllocation allocation, void ** ppData);
-VMA_CALL_PRE void      VMA_CALL_POST vmaUnmapMemory                      (VmaAllocator allocator, VmaAllocation allocation);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaFlushAllocation                  (VmaAllocator allocator, VmaAllocation allocation, uint64_t offset, uint64_t size);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaInvalidateAllocation             (VmaAllocator allocator, VmaAllocation allocation, uint64_t offset, uint64_t size);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaFlushAllocations                 (VmaAllocator allocator, unsigned allocationCount, const VmaAllocation * allocations, const uint64_t * offsets, const uint64_t * sizes);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaInvalidateAllocations            (VmaAllocator allocator, unsigned allocationCount, const VmaAllocation * allocations, const uint64_t * offsets, const uint64_t * sizes);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaCheckCorruption                  (VmaAllocator allocator, unsigned memoryTypeBits);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaDefragmentationBegin             (VmaAllocator allocator, const VmaDefragmentationInfo2 * pInfo, VmaDefragmentationStats * pStats, VmaDefragmentationContext * pContext);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaDefragmentationEnd               (VmaAllocator allocator, VmaDefragmentationContext context);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaBeginDefragmentationPass         (VmaAllocator allocator, VmaDefragmentationContext context, VmaDefragmentationPassInfo * pInfo);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaEndDefragmentationPass           (VmaAllocator allocator, VmaDefragmentationContext context);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaDefragment                       (VmaAllocator allocator, const VmaAllocation * pAllocations, size_t allocationCount, VkBool32 * pAllocationsChanged, const VmaDefragmentationInfo * pDefragmentationInfo, VmaDefragmentationStats * pDefragmentationStats);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaBindBufferMemory                 (VmaAllocator allocator, VmaAllocation allocation, VkBuffer buffer);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaBindBufferMemory2                (VmaAllocator allocator, VmaAllocation allocation, uint64_t allocationLocalOffset, VkBuffer buffer, const void * pNext);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaBindImageMemory                  (VmaAllocator allocator, VmaAllocation allocation, VkImage image);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaBindImageMemory2                 (VmaAllocator allocator, VmaAllocation allocation, uint64_t allocationLocalOffset, VkImage image, const void * pNext);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaCreateBuffer                     (VmaAllocator allocator, const VkBufferCreateInfo * pBufferCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, VkBuffer * pBuffer, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaCreateBufferWithAlignment        (VmaAllocator allocator, const VkBufferCreateInfo * pBufferCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, uint64_t minAlignment, VkBuffer * pBuffer, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
-VMA_CALL_PRE void      VMA_CALL_POST vmaDestroyBuffer                    (VmaAllocator allocator, VkBuffer buffer, VmaAllocation allocation);
-VMA_CALL_PRE VkResult  VMA_CALL_POST vmaCreateImage                      (VmaAllocator allocator, const VkImageCreateInfo * pImageCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, VkImage * pImage, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
-VMA_CALL_PRE void      VMA_CALL_POST vmaDestroyImage                     (VmaAllocator allocator, VkImage image, VmaAllocation allocation);
 
 #ifndef VMA_LEN_IF_NOT_NULL
     #define VMA_LEN_IF_NOT_NULL(len)
@@ -142,15 +91,66 @@ typedef struct VmaVulkanFunctions {
 #endif
 } VmaVulkanFunctions;
 
+#if VMA_STATS_STRING_ENABLED
+VMA_CALL_PRE void      VMA_CALL_POST vmaBuildStatsString                 (VmaAllocator allocator, char ** ppStatsString, VkBool32 detailedMap);
+VMA_CALL_PRE void      VMA_CALL_POST vmaFreeStatsString                  (VmaAllocator allocator, char * pStatsString);
+#endif
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaCreateAllocator                  (const VmaAllocatorCreateInfo * pCreateInfo, VmaAllocator * pAllocator);
+VMA_CALL_PRE void      VMA_CALL_POST vmaDestroyAllocator                 (VmaAllocator allocator);
+VMA_CALL_PRE void      VMA_CALL_POST vmaGetAllocatorInfo                 (VmaAllocator allocator, VmaAllocatorInfo * pAllocatorInfo);
+VMA_CALL_PRE void      VMA_CALL_POST vmaGetPhysicalDeviceProperties      (VmaAllocator allocator, const VkPhysicalDeviceProperties ** ppPhysicalDeviceProperties);
+VMA_CALL_PRE void      VMA_CALL_POST vmaGetMemoryProperties              (VmaAllocator allocator, const VkPhysicalDeviceMemoryProperties ** ppPhysicalDeviceMemoryProperties);
+VMA_CALL_PRE void      VMA_CALL_POST vmaGetMemoryTypeProperties          (VmaAllocator allocator, unsigned memoryTypeIndex, unsigned * pFlags);
+VMA_CALL_PRE void      VMA_CALL_POST vmaSetCurrentFrameIndex             (VmaAllocator allocator, unsigned frameIndex);
+VMA_CALL_PRE void      VMA_CALL_POST vmaCalculateStats                   (VmaAllocator allocator, VmaStats * pStats);
+VMA_CALL_PRE void      VMA_CALL_POST vmaGetBudget                        (VmaAllocator allocator, VmaBudget * pBudget);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaFindMemoryTypeIndex              (VmaAllocator allocator, unsigned memoryTypeBits, const VmaAllocationCreateInfo * pAllocationCreateInfo, unsigned * pMemoryTypeIndex);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaFindMemoryTypeIndexForBufferInfo (VmaAllocator allocator, const VkBufferCreateInfo * pBufferCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, unsigned * pMemoryTypeIndex);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaFindMemoryTypeIndexForImageInfo  (VmaAllocator allocator, const VkImageCreateInfo * pImageCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, unsigned * pMemoryTypeIndex);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaCreatePool                       (VmaAllocator allocator, const VmaPoolCreateInfo * pCreateInfo, VmaPool * pPool);
+VMA_CALL_PRE void      VMA_CALL_POST vmaDestroyPool                      (VmaAllocator allocator, VmaPool pool);
+VMA_CALL_PRE void      VMA_CALL_POST vmaGetPoolStats                     (VmaAllocator allocator, VmaPool pool, VmaPoolStats * pPoolStats);
+VMA_CALL_PRE void      VMA_CALL_POST vmaMakePoolAllocationsLost          (VmaAllocator allocator, VmaPool pool, size_t * pLostAllocationCount);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaCheckPoolCorruption              (VmaAllocator allocator, VmaPool pool);
+VMA_CALL_PRE void      VMA_CALL_POST vmaGetPoolName                      (VmaAllocator allocator, VmaPool pool, const char ** ppName);
+VMA_CALL_PRE void      VMA_CALL_POST vmaSetPoolName                      (VmaAllocator allocator, VmaPool pool, const char * pName);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaAllocateMemory                   (VmaAllocator allocator, const VkMemoryRequirements * pVkMemoryRequirements, const VmaAllocationCreateInfo * pCreateInfo, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaAllocateMemoryPages              (VmaAllocator allocator, const VkMemoryRequirements * pVkMemoryRequirements, const VmaAllocationCreateInfo * pCreateInfo, size_t allocationCount, VmaAllocation * pAllocations, VmaAllocationInfo * pAllocationInfo);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaAllocateMemoryForBuffer          (VmaAllocator allocator, VkBuffer buffer, const VmaAllocationCreateInfo * pCreateInfo, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaAllocateMemoryForImage           (VmaAllocator allocator, VkImage image, const VmaAllocationCreateInfo * pCreateInfo, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
+VMA_CALL_PRE void      VMA_CALL_POST vmaFreeMemory                       (VmaAllocator allocator, const VmaAllocation allocation);
+VMA_CALL_PRE void      VMA_CALL_POST vmaFreeMemoryPages                  (VmaAllocator allocator, size_t allocationCount, const VmaAllocation * pAllocations);
+VMA_CALL_PRE void      VMA_CALL_POST vmaGetAllocationInfo                (VmaAllocator allocator, VmaAllocation allocation, VmaAllocationInfo * pAllocationInfo);
+VMA_CALL_PRE VkBool32  VMA_CALL_POST vmaTouchAllocation                  (VmaAllocator allocator, VmaAllocation allocation);
+VMA_CALL_PRE void      VMA_CALL_POST vmaSetAllocationUserData            (VmaAllocator allocator, VmaAllocation allocation, void * pUserData);
+VMA_CALL_PRE void      VMA_CALL_POST vmaCreateLostAllocation             (VmaAllocator allocator, VmaAllocation * pAllocation);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaMapMemory                        (VmaAllocator allocator, VmaAllocation allocation, void ** ppData);
+VMA_CALL_PRE void      VMA_CALL_POST vmaUnmapMemory                      (VmaAllocator allocator, VmaAllocation allocation);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaFlushAllocation                  (VmaAllocator allocator, VmaAllocation allocation, uint64_t offset, uint64_t size);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaInvalidateAllocation             (VmaAllocator allocator, VmaAllocation allocation, uint64_t offset, uint64_t size);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaFlushAllocations                 (VmaAllocator allocator, unsigned allocationCount, const VmaAllocation * allocations, const uint64_t * offsets, const uint64_t * sizes);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaInvalidateAllocations            (VmaAllocator allocator, unsigned allocationCount, const VmaAllocation * allocations, const uint64_t * offsets, const uint64_t * sizes);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaCheckCorruption                  (VmaAllocator allocator, unsigned memoryTypeBits);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaDefragmentationBegin             (VmaAllocator allocator, const VmaDefragmentationInfo2 * pInfo, VmaDefragmentationStats * pStats, VmaDefragmentationContext * pContext);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaDefragmentationEnd               (VmaAllocator allocator, VmaDefragmentationContext context);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaBeginDefragmentationPass         (VmaAllocator allocator, VmaDefragmentationContext context, VmaDefragmentationPassInfo * pInfo);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaEndDefragmentationPass           (VmaAllocator allocator, VmaDefragmentationContext context);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaDefragment                       (VmaAllocator allocator, const VmaAllocation * pAllocations, size_t allocationCount, VkBool32 * pAllocationsChanged, const VmaDefragmentationInfo * pDefragmentationInfo, VmaDefragmentationStats * pDefragmentationStats);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaBindBufferMemory                 (VmaAllocator allocator, VmaAllocation allocation, VkBuffer buffer);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaBindBufferMemory2                (VmaAllocator allocator, VmaAllocation allocation, uint64_t allocationLocalOffset, VkBuffer buffer, const void * pNext);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaBindImageMemory                  (VmaAllocator allocator, VmaAllocation allocation, VkImage image);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaBindImageMemory2                 (VmaAllocator allocator, VmaAllocation allocation, uint64_t allocationLocalOffset, VkImage image, const void * pNext);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaCreateBuffer                     (VmaAllocator allocator, const VkBufferCreateInfo * pBufferCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, VkBuffer * pBuffer, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaCreateBufferWithAlignment        (VmaAllocator allocator, const VkBufferCreateInfo * pBufferCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, uint64_t minAlignment, VkBuffer * pBuffer, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
+VMA_CALL_PRE void      VMA_CALL_POST vmaDestroyBuffer                    (VmaAllocator allocator, VkBuffer buffer, VmaAllocation allocation);
+VMA_CALL_PRE VkResult  VMA_CALL_POST vmaCreateImage                      (VmaAllocator allocator, const VkImageCreateInfo * pImageCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, VkImage * pImage, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
+VMA_CALL_PRE void      VMA_CALL_POST vmaDestroyImage                     (VmaAllocator allocator, VkImage image, VmaAllocation allocation);
+
 // NOTE(Constantine): portability zone end.
 
 // For Visual Studio IntelliSense.
 #if defined(__cplusplus) && defined(__INTELLISENSE__)
 #define VMA_IMPLEMENTATION
-#endif
-
-#if !defined(NOMINMAX) && defined(VMA_IMPLEMENTATION)
-    #define NOMINMAX // For windows.h
 #endif
 
 #ifdef VMA_IMPLEMENTATION
