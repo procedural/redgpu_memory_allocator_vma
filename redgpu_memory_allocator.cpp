@@ -1,6 +1,7 @@
 #define VMA_NO_PROTOTYPES
 #include "redgpu_memory_allocator.h"
 
+#define VK_NO_PROTOTYPES
 #ifdef _WIN32
 #include "C:/VulkanSDK/1.2.135.0/Include/vulkan/vulkan.h"
 #endif
