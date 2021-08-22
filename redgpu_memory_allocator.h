@@ -85,7 +85,7 @@ typedef struct VmaAllocatorCreateInfo {
   const VmaDeviceMemoryCallbacks * pDeviceMemoryCallbacks;
   unsigned                         frameInUseCount;
   const uint64_t *                 pHeapSizeLimit;
-  const VmaRedGpuFunctions *       pRedGpuFunctions;
+  const VmaRedGpuFunctions *       pRedGpuFunctions;            // Required
   const VmaRecordSettings *        pRecordSettings;
   RedHandleContext                 instance;                    // Required
   unsigned                         vulkanApiVersion;
