@@ -267,7 +267,7 @@ typedef enum VmaSharingMode {
 typedef struct VmaBufferCreateInfo {
   unsigned            setTo12;
   size_t              setTo0;
-  unsigned            flags;
+  unsigned            setTo00;
   uint64_t            size;
   VmaBufferUsageFlags usage;
   VmaSharingMode      sharingMode;
