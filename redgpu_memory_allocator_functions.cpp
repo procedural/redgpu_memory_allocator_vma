@@ -268,18 +268,12 @@ REDGPU_DECLSPEC void REDGPU_API rmaVkGetImageMemoryRequirements(RedContext conte
 REDGPU_DECLSPEC RedStatus REDGPU_API rmaVkCreateBuffer(RedContext context, unsigned gpuIndex, RedHandleGpu device, const void * pVkBufferCreateInfo, const void * pVkAllocationCallbacks, RedHandleArray * pBuffer) {
   const VkBufferCreateInfo * createInfo = (const VkBufferCreateInfo *)pVkBufferCreateInfo;
   RedStatuses statuses = {};
-  RedArrayType arrayType = RED_ARRAY_TYPE_ARRAY_RW;
-  if ((createInfo->usage & VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT) == VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT) {
-    arrayType = RED_ARRAY_TYPE_ARRAY_RO_CONSTANT;
-  } else if ((createInfo->usage & VK_BUFFER_USAGE_INDEX_BUFFER_BIT) == VK_BUFFER_USAGE_INDEX_BUFFER_BIT) {
-    arrayType = RED_ARRAY_TYPE_INDEX_RO;
-  }
   // NOTE(Constantine): Pass structuredBufferElementBytesCount from VMA to RMA in future.
   uint64_t structuredBufferElementBytesCount = 0;
   // NOTE(Constantine): Pass initialAccess from VMA to RMA in future.
   RedAccessBitflags initialAccess = 0;
   RedArray array = {};
-  redCreateArray(context, device, "REDGPU Memory Allocator", arrayType, createInfo->size, structuredBufferElementBytesCount, initialAccess, (createInfo->sharingMode == VK_SHARING_MODE_CONCURRENT || createInfo->queueFamilyIndexCount == 0) ? -1 : createInfo->pQueueFamilyIndices[0], 0, &array, &statuses, 0, 0, 0);
+  redCreateArray(context, device, "REDGPU Memory Allocator", (RedArrayType)createInfo->usage, createInfo->size, structuredBufferElementBytesCount, initialAccess, (createInfo->sharingMode == VK_SHARING_MODE_CONCURRENT || createInfo->queueFamilyIndexCount == 0) ? -1 : createInfo->pQueueFamilyIndices[0], 0, &array, &statuses, 0, 0, 0);
   pBuffer[0] = array.handle;
   {
     std::lock_guard<std::mutex> __mapArraysMutexScope(__REDGPU_MEMORY_ALLOCATOR_FUNCTIONS_GLOBAL_ec8b2cdda35a8068bba6ef47ad511ac00d5c39d6_mapArraysMutex);
