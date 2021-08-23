@@ -274,10 +274,14 @@ REDGPU_DECLSPEC RedStatus REDGPU_API rmaVkCreateBuffer(RedContext context, unsig
   } else if ((createInfo->usage & VK_BUFFER_USAGE_INDEX_BUFFER_BIT) == VK_BUFFER_USAGE_INDEX_BUFFER_BIT) {
     arrayType = RED_ARRAY_TYPE_INDEX_RO;
   }
+  // NOTE(Constantine): Pass structuredBufferElementBytesCount from VMA to RMA in future.
+  uint64_t structuredBufferElementBytesCount = 0;
+  // NOTE(Constantine): Pass initialAccess from VMA to RMA in future.
+  RedAccessBitflags initialAccess = 0;
   // NOTE(Constantine): Pass initialQueueFamilyIndex from VMA to RMA in future.
   unsigned initialQueueFamilyIndex = 0;
   RedArray array = {};
-  redCreateArray(context, device, "REDGPU Memory Allocator", arrayType, createInfo->size, 0, 0, createInfo->sharingMode == VK_SHARING_MODE_CONCURRENT ? -1 : initialQueueFamilyIndex, 0, &array, &statuses, 0, 0, 0);
+  redCreateArray(context, device, "REDGPU Memory Allocator", arrayType, createInfo->size, structuredBufferElementBytesCount, initialAccess, createInfo->sharingMode == VK_SHARING_MODE_CONCURRENT ? -1 : initialQueueFamilyIndex, 0, &array, &statuses, 0, 0, 0);
   pBuffer[0] = array.handle;
   {
     std::lock_guard<std::mutex> __mapArraysMutexScope(__REDGPU_MEMORY_ALLOCATOR_FUNCTIONS_GLOBAL_ec8b2cdda35a8068bba6ef47ad511ac00d5c39d6_mapArraysMutex);
@@ -309,10 +313,36 @@ REDGPU_DECLSPEC RedStatus REDGPU_API rmaVkCreateImage(RedContext context, unsign
   } else if (createInfo->imageType == VK_IMAGE_TYPE_3D) {
     imageDimensions = RED_IMAGE_DIMENSIONS_3D;
   }
+  RedAccessBitflags restrictToAccess = 0;
+  if ((createInfo->usage & VK_IMAGE_USAGE_TRANSFER_SRC_BIT) == VK_IMAGE_USAGE_TRANSFER_SRC_BIT) {
+    restrictToAccess |= RED_ACCESS_BITFLAG_COPY_R;
+  }
+  if ((createInfo->usage & VK_IMAGE_USAGE_TRANSFER_DST_BIT) == VK_IMAGE_USAGE_TRANSFER_DST_BIT) {
+    restrictToAccess |= RED_ACCESS_BITFLAG_COPY_W;
+  }
+  if ((createInfo->usage & VK_IMAGE_USAGE_SAMPLED_BIT) == VK_IMAGE_USAGE_SAMPLED_BIT) {
+    restrictToAccess |= RED_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R | RED_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R;
+  }
+  if ((createInfo->usage & VK_IMAGE_USAGE_STORAGE_BIT) == VK_IMAGE_USAGE_STORAGE_BIT) {
+    restrictToAccess |= RED_ACCESS_BITFLAG_STRUCT_RESOURCE_W;
+  }
+  if ((createInfo->usage & VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) == VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT) {
+    restrictToAccess |= RED_ACCESS_BITFLAG_OUTPUT_COLOR_W;
+  }
+  if ((createInfo->usage & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT) == VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT) {
+    restrictToAccess |= RED_ACCESS_BITFLAG_OUTPUT_DEPTH_RW;
+    if ((RedFormat)createInfo->format == RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT ||
+        (RedFormat)createInfo->format == RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT)
+    {
+      restrictToAccess |= RED_ACCESS_BITFLAG_OUTPUT_STENCIL_RW;
+    }
+  }
+  // NOTE(Constantine): Pass initialAccess from VMA to RMA in future.
+  RedAccessBitflags initialAccess = 0;
   // NOTE(Constantine): Pass initialQueueFamilyIndex from VMA to RMA in future.
   unsigned initialQueueFamilyIndex = 0;
   RedImage image = {};
-  redCreateImage(context, device, "REDGPU Memory Allocator", imageDimensions, (RedFormat)createInfo->format, createInfo->extent.width, createInfo->extent.height, createInfo->extent.depth, createInfo->mipLevels, createInfo->arrayLayers, (RedMultisampleCountBitflag)createInfo->samples, 0, 0, createInfo->sharingMode == VK_SHARING_MODE_CONCURRENT ? -1 : initialQueueFamilyIndex, 0, &image, &statuses, 0, 0, 0);
+  redCreateImage(context, device, "REDGPU Memory Allocator", imageDimensions, (RedFormat)createInfo->format, createInfo->extent.width, createInfo->extent.height, createInfo->extent.depth, createInfo->mipLevels, createInfo->arrayLayers, (RedMultisampleCountBitflag)createInfo->samples, restrictToAccess, initialAccess, createInfo->sharingMode == VK_SHARING_MODE_CONCURRENT ? -1 : initialQueueFamilyIndex, 0, &image, &statuses, 0, 0, 0);
   pImage[0] = image.handle;
   {
     std::lock_guard<std::mutex> __mapImagesMutexScope(__REDGPU_MEMORY_ALLOCATOR_FUNCTIONS_GLOBAL_ec8b2cdda35a8068bba6ef47ad511ac00d5c39d6_mapImagesMutex);
