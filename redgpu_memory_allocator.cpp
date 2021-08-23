@@ -241,6 +241,10 @@ typedef struct VmaVulkanFunctions {
 #endif
 } VmaVulkanFunctions;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if VMA_STATS_STRING_ENABLED
 VMA_CALL_PRE void     VMA_CALL_POST vmaBuildStatsString                 (VmaAllocator allocator, char ** ppStatsString, VkBool32 detailedMap);
 VMA_CALL_PRE void     VMA_CALL_POST vmaFreeStatsString                  (VmaAllocator allocator, char * pStatsString);
@@ -295,6 +299,10 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaCreateBufferWithAlignment        (VmaAllo
 VMA_CALL_PRE void     VMA_CALL_POST vmaDestroyBuffer                    (VmaAllocator allocator, VkBuffer buffer, VmaAllocation allocation);
 VMA_CALL_PRE VkResult VMA_CALL_POST vmaCreateImage                      (VmaAllocator allocator, const VkImageCreateInfo * pImageCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, VkImage * pImage, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
 VMA_CALL_PRE void     VMA_CALL_POST vmaDestroyImage                     (VmaAllocator allocator, VkImage image, VmaAllocation allocation);
+
+#ifdef __cplusplus
+}
+#endif
 
 // NOTE(Constantine): portability zone end.
 
