@@ -253,12 +253,6 @@ typedef struct VmaDefragmentationStats {
   unsigned deviceMemoryBlocksFreed;
 } VmaDefragmentationStats;
 
-typedef enum VmaBufferUsageFlags {
-  VMA_BUFFER_USAGE_FLAGS_ARRAY_RW          = REDGPU_B32(0000,0000,0000,0000,0000,0000,0010,0011),
-  VMA_BUFFER_USAGE_FLAGS_ARRAY_RO_CONSTANT = REDGPU_B32(0000,0000,0000,0000,0000,0000,0001,0010),
-  VMA_BUFFER_USAGE_FLAGS_INDEX_RO          = REDGPU_B32(0000,0000,0000,0000,0000,0000,0100,0010),
-} VmaBufferUsageFlags;
-
 typedef enum VmaSharingMode {
   VMA_SHARING_MODE_EXCLUSIVE  = 0,
   VMA_SHARING_MODE_CONCURRENT = 1,
@@ -269,7 +263,7 @@ typedef struct VmaBufferCreateInfo {
   size_t              setTo0;
   unsigned            setTo00;
   uint64_t            size;
-  VmaBufferUsageFlags usage;
+  RedArrayType        type;
   VmaSharingMode      sharingMode;
   unsigned            queueFamilyIndexCount;
   const unsigned *    pQueueFamilyIndices;
