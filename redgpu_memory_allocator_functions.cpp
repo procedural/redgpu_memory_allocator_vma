@@ -278,10 +278,8 @@ REDGPU_DECLSPEC RedStatus REDGPU_API rmaVkCreateBuffer(RedContext context, unsig
   uint64_t structuredBufferElementBytesCount = 0;
   // NOTE(Constantine): Pass initialAccess from VMA to RMA in future.
   RedAccessBitflags initialAccess = 0;
-  // NOTE(Constantine): Pass initialQueueFamilyIndex from VMA to RMA in future.
-  unsigned initialQueueFamilyIndex = 0;
   RedArray array = {};
-  redCreateArray(context, device, "REDGPU Memory Allocator", arrayType, createInfo->size, structuredBufferElementBytesCount, initialAccess, createInfo->sharingMode == VK_SHARING_MODE_CONCURRENT ? -1 : initialQueueFamilyIndex, 0, &array, &statuses, 0, 0, 0);
+  redCreateArray(context, device, "REDGPU Memory Allocator", arrayType, createInfo->size, structuredBufferElementBytesCount, initialAccess, (createInfo->sharingMode == VK_SHARING_MODE_CONCURRENT || createInfo->queueFamilyIndexCount == 0) ? -1 : createInfo->pQueueFamilyIndices[0], 0, &array, &statuses, 0, 0, 0);
   pBuffer[0] = array.handle;
   {
     std::lock_guard<std::mutex> __mapArraysMutexScope(__REDGPU_MEMORY_ALLOCATOR_FUNCTIONS_GLOBAL_ec8b2cdda35a8068bba6ef47ad511ac00d5c39d6_mapArraysMutex);
@@ -339,10 +337,8 @@ REDGPU_DECLSPEC RedStatus REDGPU_API rmaVkCreateImage(RedContext context, unsign
   }
   // NOTE(Constantine): Pass initialAccess from VMA to RMA in future.
   RedAccessBitflags initialAccess = 0;
-  // NOTE(Constantine): Pass initialQueueFamilyIndex from VMA to RMA in future.
-  unsigned initialQueueFamilyIndex = 0;
   RedImage image = {};
-  redCreateImage(context, device, "REDGPU Memory Allocator", imageDimensions, (RedFormat)createInfo->format, createInfo->extent.width, createInfo->extent.height, createInfo->extent.depth, createInfo->mipLevels, createInfo->arrayLayers, (RedMultisampleCountBitflag)createInfo->samples, restrictToAccess, initialAccess, createInfo->sharingMode == VK_SHARING_MODE_CONCURRENT ? -1 : initialQueueFamilyIndex, 0, &image, &statuses, 0, 0, 0);
+  redCreateImage(context, device, "REDGPU Memory Allocator", imageDimensions, (RedFormat)createInfo->format, createInfo->extent.width, createInfo->extent.height, createInfo->extent.depth, createInfo->mipLevels, createInfo->arrayLayers, (RedMultisampleCountBitflag)createInfo->samples, restrictToAccess, initialAccess, (createInfo->sharingMode == VK_SHARING_MODE_CONCURRENT || createInfo->queueFamilyIndexCount == 0) ? -1 : createInfo->pQueueFamilyIndices[0], 0, &image, &statuses, 0, 0, 0);
   pImage[0] = image.handle;
   {
     std::lock_guard<std::mutex> __mapImagesMutexScope(__REDGPU_MEMORY_ALLOCATOR_FUNCTIONS_GLOBAL_ec8b2cdda35a8068bba6ef47ad511ac00d5c39d6_mapImagesMutex);
