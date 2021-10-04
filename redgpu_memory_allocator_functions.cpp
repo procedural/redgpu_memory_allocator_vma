@@ -250,7 +250,11 @@ REDGPU_DECLSPEC RedStatus REDGPU_API rmaVmaVkBindImageMemory(RedContext context,
 }
 
 REDGPU_DECLSPEC void REDGPU_API rmaVmaVkGetBufferMemoryRequirements(RedContext context, unsigned gpuIndex, RedHandleGpu device, RedHandleArray buffer, void * pVkMemoryRequirements) {
-  RedArray arrayData = __REDGPU_MEMORY_ALLOCATOR_VMA_FUNCTIONS_GLOBAL_ec8b2cdda35a8068bba6ef47ad511ac00d5c39d6_mapArrays[buffer];
+  RedArray arrayData;
+  {
+    std::lock_guard<std::mutex> __mapArraysMutexScope(__REDGPU_MEMORY_ALLOCATOR_VMA_FUNCTIONS_GLOBAL_ec8b2cdda35a8068bba6ef47ad511ac00d5c39d6_mapArraysMutex);
+    arrayData = __REDGPU_MEMORY_ALLOCATOR_VMA_FUNCTIONS_GLOBAL_ec8b2cdda35a8068bba6ef47ad511ac00d5c39d6_mapArrays[buffer];
+  }
   VkMemoryRequirements * out = (VkMemoryRequirements *)pVkMemoryRequirements;
   out->size           = arrayData.memoryBytesCount;
   out->alignment      = arrayData.memoryBytesAlignment;
@@ -258,7 +262,11 @@ REDGPU_DECLSPEC void REDGPU_API rmaVmaVkGetBufferMemoryRequirements(RedContext c
 }
 
 REDGPU_DECLSPEC void REDGPU_API rmaVmaVkGetImageMemoryRequirements(RedContext context, unsigned gpuIndex, RedHandleGpu device, RedHandleImage image, void * pVkMemoryRequirements) {
-  RedImage imageData = __REDGPU_MEMORY_ALLOCATOR_VMA_FUNCTIONS_GLOBAL_ec8b2cdda35a8068bba6ef47ad511ac00d5c39d6_mapImages[image];
+  RedImage imageData;
+  {
+    std::lock_guard<std::mutex> __mapImagesMutexScope(__REDGPU_MEMORY_ALLOCATOR_VMA_FUNCTIONS_GLOBAL_ec8b2cdda35a8068bba6ef47ad511ac00d5c39d6_mapImagesMutex);
+    imageData = __REDGPU_MEMORY_ALLOCATOR_VMA_FUNCTIONS_GLOBAL_ec8b2cdda35a8068bba6ef47ad511ac00d5c39d6_mapImages[image];
+  }
   VkMemoryRequirements * out = (VkMemoryRequirements *)pVkMemoryRequirements;
   out->size           = imageData.memoryBytesCount;
   out->alignment      = imageData.memoryBytesAlignment;
