@@ -358,7 +358,7 @@ REDGPU_DECLSPEC void REDGPU_API rmaVmaVkDestroyImage(RedContext context, unsigne
 }
 
 REDGPU_DECLSPEC void REDGPU_API rmaVmaVkCmdCopyBuffer(RedContext context, unsigned gpuIndex, RedHandleCalls commandBuffer, RedHandleArray srcBuffer, RedHandleArray dstBuffer, unsigned regionCount, const void * pVkBufferCopy) {
-  RedCallProceduresAndAddresses callPAs = {};
+  RedCallProceduresAndAddresses callPAs;
   redGetCallProceduresAndAddresses(context, context->gpus[gpuIndex].gpu, &callPAs, 0, 0, 0, 0);
   callPAs.redCallCopyArrayToArray(commandBuffer, srcBuffer, dstBuffer, regionCount, (const RedCopyArrayRange *)pVkBufferCopy);
 }
