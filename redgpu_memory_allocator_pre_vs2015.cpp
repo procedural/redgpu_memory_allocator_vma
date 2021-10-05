@@ -14900,7 +14900,8 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaCreateBuffer(
 
     VMA_DEBUG_GLOBAL_MUTEX_LOCK
 
-    *pBuffer = {};
+    RedVkBuffer bufferDefault = {};
+    *pBuffer = bufferDefault;
     *pAllocation = VK_NULL_HANDLE;
 
     // 1. Create VkBuffer.
@@ -14969,11 +14970,11 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaCreateBuffer(
                 pAllocation);
             *pAllocation = VK_NULL_HANDLE;
             (*allocator->GetVulkanFunctions().vkDestroyBuffer)(allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, allocator->m_hDevice, pBuffer->handle, allocator->GetAllocationCallbacks());
-            *pBuffer = {};
+            *pBuffer = bufferDefault;
             return res;
         }
         (*allocator->GetVulkanFunctions().vkDestroyBuffer)(allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, allocator->m_hDevice, pBuffer->handle, allocator->GetAllocationCallbacks());
-        *pBuffer = {};
+        *pBuffer = bufferDefault;
         return res;
     }
     return res;
@@ -15005,7 +15006,8 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaCreateBufferWithAlignment(
 
     VMA_DEBUG_GLOBAL_MUTEX_LOCK
 
-    *pBuffer = {};
+    RedVkBuffer bufferDefault = {};
+    *pBuffer = bufferDefault;
     *pAllocation = VK_NULL_HANDLE;
 
     // 1. Create VkBuffer.
@@ -15073,11 +15075,11 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaCreateBufferWithAlignment(
                 pAllocation);
             *pAllocation = VK_NULL_HANDLE;
             (*allocator->GetVulkanFunctions().vkDestroyBuffer)(allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, allocator->m_hDevice, pBuffer->handle, allocator->GetAllocationCallbacks());
-            *pBuffer = {};
+            *pBuffer = bufferDefault;
             return res;
         }
         (*allocator->GetVulkanFunctions().vkDestroyBuffer)(allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, allocator->m_hDevice, pBuffer->handle, allocator->GetAllocationCallbacks());
-        *pBuffer = {};
+        *pBuffer = bufferDefault;
         return res;
     }
     return res;
@@ -15144,7 +15146,8 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaCreateImage(
 
     VMA_DEBUG_GLOBAL_MUTEX_LOCK
 
-    *pImage = {};
+    RedVkImage imageDefault = {};
+    *pImage = imageDefault;
     *pAllocation = VK_NULL_HANDLE;
 
     // 1. Create VkImage.
@@ -15216,11 +15219,11 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaCreateImage(
                 pAllocation);
             *pAllocation = VK_NULL_HANDLE;
             (*allocator->GetVulkanFunctions().vkDestroyImage)(allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, allocator->m_hDevice, pImage->handle, allocator->GetAllocationCallbacks());
-            *pImage = {};
+            *pImage = imageDefault;
             return res;
         }
         (*allocator->GetVulkanFunctions().vkDestroyImage)(allocator->m_redgpuContext, allocator->m_redgpuContextGpuIndex, allocator->m_hDevice, pImage->handle, allocator->GetAllocationCallbacks());
-        *pImage = {};
+        *pImage = imageDefault;
         return res;
     }
     return res;
