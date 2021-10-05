@@ -67,11 +67,11 @@ typedef struct VmaRedGpuFunctions {
   RedStatus (*redgpuVkInvalidateMappedMemoryRanges)      (RedContext context, unsigned gpuIndex, RedHandleGpu device, unsigned memoryRangeCount, const void * pVkMappedMemoryRange);
   RedStatus (*redgpuVkBindBufferMemory)                  (RedContext context, unsigned gpuIndex, RedHandleGpu device, RedHandleArray buffer, RedHandleMemory memory, uint64_t memoryOffset);
   RedStatus (*redgpuVkBindImageMemory)                   (RedContext context, unsigned gpuIndex, RedHandleGpu device, RedHandleImage image, RedHandleMemory memory, uint64_t memoryOffset);
-  void      (*redgpuVkGetBufferMemoryRequirements)       (RedContext context, unsigned gpuIndex, RedHandleGpu device, RedHandleArray buffer, void * pVkMemoryRequirements);
-  void      (*redgpuVkGetImageMemoryRequirements)        (RedContext context, unsigned gpuIndex, RedHandleGpu device, RedHandleImage image, void * pVkMemoryRequirements);
-  RedStatus (*redgpuVkCreateBuffer)                      (RedContext context, unsigned gpuIndex, RedHandleGpu device, const void * pVkBufferCreateInfo, const void * pVkAllocationCallbacks, RedHandleArray * pBuffer);
+  void      (*redgpuVkGetBufferMemoryRequirements)       (RedContext context, unsigned gpuIndex, RedHandleGpu device, const RedArray * buffer, void * pVkMemoryRequirements);
+  void      (*redgpuVkGetImageMemoryRequirements)        (RedContext context, unsigned gpuIndex, RedHandleGpu device, const RedImage * image, void * pVkMemoryRequirements);
+  RedStatus (*redgpuVkCreateBuffer)                      (RedContext context, unsigned gpuIndex, RedHandleGpu device, const void * pVkBufferCreateInfo, const void * pVkAllocationCallbacks, RedArray * pBuffer);
   void      (*redgpuVkDestroyBuffer)                     (RedContext context, unsigned gpuIndex, RedHandleGpu device, RedHandleArray buffer, const void * pVkAllocationCallbacks);
-  RedStatus (*redgpuVkCreateImage)                       (RedContext context, unsigned gpuIndex, RedHandleGpu device, const void * pVkImageCreateInfo, const void * pVkAllocationCallbacks, RedHandleImage * pImage);
+  RedStatus (*redgpuVkCreateImage)                       (RedContext context, unsigned gpuIndex, RedHandleGpu device, const void * pVkImageCreateInfo, const void * pVkAllocationCallbacks, RedImage * pImage);
   void      (*redgpuVkDestroyImage)                      (RedContext context, unsigned gpuIndex, RedHandleGpu device, RedHandleImage image, const void * pVkAllocationCallbacks);
   void      (*redgpuVkCmdCopyBuffer)                     (RedContext context, unsigned gpuIndex, RedHandleCalls commandBuffer, RedHandleArray srcBuffer, RedHandleArray dstBuffer, unsigned regionCount, const void * pVkBufferCopy);
 } VmaRedGpuFunctions;
@@ -355,8 +355,8 @@ VMA_CALL_PRE void      VMA_CALL_POST vmaGetPoolName                      (VmaAll
 VMA_CALL_PRE void      VMA_CALL_POST vmaSetPoolName                      (VmaAllocator allocator, VmaPool pool, const char * pName);
 VMA_CALL_PRE RedStatus VMA_CALL_POST vmaAllocateMemory                   (VmaAllocator allocator, const VmaMemoryRequirements * pVkMemoryRequirements, const VmaAllocationCreateInfo * pCreateInfo, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
 VMA_CALL_PRE RedStatus VMA_CALL_POST vmaAllocateMemoryPages              (VmaAllocator allocator, const VmaMemoryRequirements * pVkMemoryRequirements, const VmaAllocationCreateInfo * pCreateInfo, size_t allocationCount, VmaAllocation * pAllocations, VmaAllocationInfo * pAllocationInfo);
-VMA_CALL_PRE RedStatus VMA_CALL_POST vmaAllocateMemoryForBuffer          (VmaAllocator allocator, RedHandleArray buffer, const VmaAllocationCreateInfo * pCreateInfo, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
-VMA_CALL_PRE RedStatus VMA_CALL_POST vmaAllocateMemoryForImage           (VmaAllocator allocator, RedHandleImage image, const VmaAllocationCreateInfo * pCreateInfo, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
+VMA_CALL_PRE RedStatus VMA_CALL_POST vmaAllocateMemoryForBuffer          (VmaAllocator allocator, const RedArray * buffer, const VmaAllocationCreateInfo * pCreateInfo, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
+VMA_CALL_PRE RedStatus VMA_CALL_POST vmaAllocateMemoryForImage           (VmaAllocator allocator, const RedImage * image, const VmaAllocationCreateInfo * pCreateInfo, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
 VMA_CALL_PRE void      VMA_CALL_POST vmaFreeMemory                       (VmaAllocator allocator, const VmaAllocation allocation);
 VMA_CALL_PRE void      VMA_CALL_POST vmaFreeMemoryPages                  (VmaAllocator allocator, size_t allocationCount, const VmaAllocation * pAllocations);
 VMA_CALL_PRE void      VMA_CALL_POST vmaGetAllocationInfo                (VmaAllocator allocator, VmaAllocation allocation, VmaAllocationInfo * pAllocationInfo);
@@ -379,10 +379,10 @@ VMA_CALL_PRE RedStatus VMA_CALL_POST vmaBindBufferMemory                 (VmaAll
 VMA_CALL_PRE RedStatus VMA_CALL_POST vmaBindBufferMemory2                (VmaAllocator allocator, VmaAllocation allocation, uint64_t allocationLocalOffset, RedHandleArray buffer, const void * pNext);
 VMA_CALL_PRE RedStatus VMA_CALL_POST vmaBindImageMemory                  (VmaAllocator allocator, VmaAllocation allocation, RedHandleImage image);
 VMA_CALL_PRE RedStatus VMA_CALL_POST vmaBindImageMemory2                 (VmaAllocator allocator, VmaAllocation allocation, uint64_t allocationLocalOffset, RedHandleImage image, const void * pNext);
-VMA_CALL_PRE RedStatus VMA_CALL_POST vmaCreateBuffer                     (VmaAllocator allocator, const VmaBufferCreateInfo * pBufferCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, RedHandleArray * pBuffer, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
-VMA_CALL_PRE RedStatus VMA_CALL_POST vmaCreateBufferWithAlignment        (VmaAllocator allocator, const VmaBufferCreateInfo * pBufferCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, uint64_t minAlignment, RedHandleArray * pBuffer, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
+VMA_CALL_PRE RedStatus VMA_CALL_POST vmaCreateBuffer                     (VmaAllocator allocator, const VmaBufferCreateInfo * pBufferCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, RedArray * pBuffer, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
+VMA_CALL_PRE RedStatus VMA_CALL_POST vmaCreateBufferWithAlignment        (VmaAllocator allocator, const VmaBufferCreateInfo * pBufferCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, uint64_t minAlignment, RedArray * pBuffer, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
 VMA_CALL_PRE void      VMA_CALL_POST vmaDestroyBuffer                    (VmaAllocator allocator, RedHandleArray buffer, VmaAllocation allocation);
-VMA_CALL_PRE RedStatus VMA_CALL_POST vmaCreateImage                      (VmaAllocator allocator, const VmaImageCreateInfo * pImageCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, RedHandleImage * pImage, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
+VMA_CALL_PRE RedStatus VMA_CALL_POST vmaCreateImage                      (VmaAllocator allocator, const VmaImageCreateInfo * pImageCreateInfo, const VmaAllocationCreateInfo * pAllocationCreateInfo, RedImage * pImage, VmaAllocation * pAllocation, VmaAllocationInfo * pAllocationInfo);
 VMA_CALL_PRE void      VMA_CALL_POST vmaDestroyImage                     (VmaAllocator allocator, RedHandleImage image, VmaAllocation allocation);
 #endif
 
